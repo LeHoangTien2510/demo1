@@ -1,5 +1,7 @@
 package com.example.demo1;
 
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.swing.*;
@@ -18,5 +20,20 @@ public class AppInit extends AbstractAnnotationConfigDispatcherServletInitialize
     @Override
     protected String[] getServletMappings() {
         return new String[] { "/" };
+    }
+
+    @Override
+    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+        // Cấu hình thông tin file được upload
+        // location (lưu vào thư mục trên webserver)
+        String location = System.getProperty("java.io.tmpdir");
+        // max file size (5Mb)
+        long maxFileSize = 5 * 1024 * 1024; // = 5Mb
+        // max request size (50Mb)
+        long maxRequestSize = 50 * 1024 * 1024;
+        // file size threshold ~ Cached ??? = 0 ; ghi ra đĩa
+        int  fileSizeThreshold = 0;
+        MultipartConfigElement multipartConfigElement = new MultipartConfigElement(location,  maxFileSize, maxRequestSize, fileSizeThreshold);
+        registration.setMultipartConfig(multipartConfigElement);
     }
 }

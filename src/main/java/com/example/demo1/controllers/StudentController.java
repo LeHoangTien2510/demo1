@@ -1,14 +1,15 @@
 package com.example.demo1.controllers;
 
 import com.example.demo1.models.Student;
+import com.example.demo1.services.HibernateStudentService;
 import com.example.demo1.services.StudentServiceImp;
 import com.example.demo1.services.StudentServiceInterface;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,6 +21,7 @@ public class StudentController {
     List<Student> studentList = new ArrayList<>();
     @Autowired
     StudentServiceInterface studentService;
+    HibernateStudentService hibernateStudentService = new HibernateStudentService();
 
     @GetMapping("/students")
     public ModelAndView getStudents(@RequestParam(value = "q",defaultValue="") String q,
@@ -28,7 +30,7 @@ public class StudentController {
                                     @RequestParam(value = "limit",defaultValue = "10") int limit) {
         List<Student> students = new ArrayList<>();
         if(q != null || sort != null || dir != null || limit > 0) {
-            students = studentService.getStudents(q,sort,dir,limit);
+            students = hibernateStudentService.getStudents();
         }
         else {
             students = studentService.getStudents();
@@ -39,14 +41,19 @@ public class StudentController {
     }
 
     @GetMapping("/students/create-student")
-    public String createStudent() {
+    public String createStudent(Model model) {
+        model.addAttribute("student", new Student());
         return "create-student";
     }
 
     @PostMapping("/students/create-student")
-    public String createStudentSubmit(@RequestParam("name") String name,
-                                      @RequestParam("final_score") double finalScore, RedirectAttributes redirectAttributes) {
-        Student student = new Student(name, finalScore);
+    public String createStudentSubmit(@Valid @ModelAttribute Student student,
+                                      BindingResult binding,
+                                      RedirectAttributes redirectAttributes
+                                      ) {
+        if(binding.hasErrors()) {
+            return "create-student";
+        }
         studentService.addStudent(student);
         redirectAttributes.addFlashAttribute("message", "Student created successfully!");
         return "redirect:/students";
@@ -69,17 +76,15 @@ public class StudentController {
 
     @GetMapping("/students/{id}/edit")
     public ModelAndView editStudentGet(@PathVariable("id") int id) {
-        ModelAndView modelAndView = new ModelAndView("update-student");
+        ModelAndView modelAndView = new ModelAndView("student-update");
         Student student = studentService.getStudentById(id);
-        modelAndView.addObject("s", student);
+        modelAndView.addObject("student", student);
         return modelAndView;
     }
 
     @PostMapping("/students/{id}/edit")
     public String editStudentPost(@PathVariable("id") int id,
-                                  @RequestParam("name") String name,
-                                  @RequestParam("final_score") double final_score) {
-        Student student = new Student(id,name, final_score);
+                                  @ModelAttribute Student student) {
         studentService.updateStudent(student);
         return "redirect:/students";
     }

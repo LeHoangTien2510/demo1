@@ -5,18 +5,32 @@
     <title>Student List</title>
 </head>
 <body>
+<a th:href = "@{/students/create-student}">Thêm sinh viên</a>
+<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 <h1>Danh sách sinh viên</h1>
 <table border =1>
-    <tr>
-        <th>Mã SV</th>
-        <th>Tên SV</th>
-        <th>Điểm cuối kỳ</th>
-    </tr>
-    <tr th:each="student : ${studentList}">
-        <td th:text="${student.code}"></td>
-        <td th:text="${student.name}"></td>
-        <td th:text="${student.finalScore}"></td>
-    </tr>
+        <tr>
+            <th>Mã SV</th>
+            <th>Tên SV</th>
+            <th>Điểm cuối kỳ</th>
+            <th>Xóa</th>
+            <th>Chỉnh sửa</th>
+        </tr>
+        <tr th:each="student : ${studentList}">
+            <td th:text="${student.id}">id</td>
+            <td th:text="${student.name}">name</td>
+            <td th:text="${student.finalScore}">score</td>
+            <td>
+                <form th:action="@{/students/{id}/delete(id=${student.id})}"
+                      method="post"
+                      onsubmit="return confirm('Xóa sinh viên này?');">
+                    <button type="submit">Xóa</button>
+                </form>
+            </td>
+            <td>
+                <a th:href = "@{/students/{id}/edit(id=${student.id})}">Chỉnh sửa</a>
+            </td>
+        </tr>
 </table>
 </body>
 </html>

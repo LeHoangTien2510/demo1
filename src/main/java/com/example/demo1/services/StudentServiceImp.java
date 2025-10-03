@@ -2,6 +2,7 @@ package com.example.demo1.services;
 
 import com.example.demo1.controllers.DBConnection;
 import com.example.demo1.models.Student;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

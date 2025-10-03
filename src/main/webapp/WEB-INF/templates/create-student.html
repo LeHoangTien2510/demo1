@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Student</title>
+</head>
+<body>
+<form th:action="@{/students/create-student}" method="post" th:object="${student}">
+    Tên sinh viên: <input type="text" th:field="*{name}"/>
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
+    <br/>
+
+    Điểm sinh viên: <input type = "text" th:field = "*{finalScore}"/>
+
+    <button type="submit">Add</button>
+</form>
+</body>
+</html>

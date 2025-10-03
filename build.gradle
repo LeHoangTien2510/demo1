@@ -29,6 +29,8 @@ dependencies {
     implementation("org.thymeleaf:thymeleaf-spring6:3.1.2.RELEASE")
     implementation("org.thymeleaf:thymeleaf:3.1.2.RELEASE")
     // Data Binding + Validation
+    // ORM
+    implementation("org.hibernate.orm:hibernate-core:7.1.1.Final")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.3.Final")
     implementation("org.glassfish:jakarta.el:4.0.2")
